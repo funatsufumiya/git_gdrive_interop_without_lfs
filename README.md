@@ -11,7 +11,7 @@ NOTE: This method is not dependent on Google Drive. You can use any other (cloud
 - In this method, copying and transferring files is using other methods. So you can detect the modification of the files, but which file should be copied or transferred is not automatically done.
   - So this method **is not suitable for the case** that you want to frequently back to the previous version of the large file. (In this case, you can also consider [git-lfs-agent-rclone](https://github.com/funatsufumiya/git-lfs-agent-rclone), [git-lfs-agent-scp](https://github.com/funatsufumiya/git-lfs-agent-scp), [git-lfs-php-server](https://github.com/funatsufumiya/git-lfs-php-server) or other methods.)
 - The advantage gained in exchange for this limitation is, that **file names can be handled as normal**. This is desirable, in my opinion, for management in Google Drive and Dropbox.
-  - This method is especially useful in situations where there are old-fashioned _v2 or _final file names in Google Drive or Dropbox, but files with the same name are occasionally updated. ( I put aside whether old fashioned file names are really 
+  - This method is especially useful in situations where there are old-fashioned _v2 or _final file names in Google Drive or Dropbox, and files with the same name are occasionally updated. ( I put aside whether old fashioned file names are really 
 acceptable or go nice with git or not... )
 
 ## Script(s)
