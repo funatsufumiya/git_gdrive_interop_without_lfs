@@ -2,7 +2,7 @@
 
 This document introduces a way to use Git and Google Drive together without using Git LFS. 
 
-This is useful when you have a large file that you want to version control with Git, but you don't want to use Git LFS.
+This is useful when you have a large file that you want to version control with Git, but you don't want to use Git LFS. (Especially having quite large files, such as game assets or movie files.)
 
 ## Script(s)
 
