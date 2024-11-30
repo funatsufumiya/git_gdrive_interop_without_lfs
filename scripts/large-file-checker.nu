@@ -11,10 +11,10 @@ let ignore_files = ["list.txt" "hash.txt" ".gitignore" ".gitkeep" ".DS_Store"]
 let ids_with_all = ($ids | append "all")
 let treat_empty_as_all = false
 let do_ask_for_all_update = true
-# NOTE: only for help message. Please also change get_gdrive_dir function
+# NOTE: only for help message. Please also change get_large_file_dir function
 let dir_pattern_for_help = "bin/data/**/from_gdrive"
 
-def get_gdrive_dir [id: string] {
+def get_large_file_dir [id: string] {
     if $id == "all" {
         error make {msg: "[Error] id 'all' should not be used here"}
     }
@@ -114,11 +114,11 @@ def rustgenhash_installed_or_exit [] {
     }
 }
 
-# def path_relative_to_gdrive_dir [path: string, id: string] {
-#     let gdrive_dir = (get_gdrive_dir $id)
-#     print "gdrive_dir: " $gdrive_dir
+# def path_relative_to_lf_dir [path: string, id: string] {
+#     let lf_dir = (get_large_file_dir $id)
+#     print "lf_dir: " $lf_dir
 #     print "path: " $path
-#     let rel_path = ($path | path relative-to $gdrive_dir)
+#     let rel_path = ($path | path relative-to $lf_dir)
 #     print $"rel_path: ($rel_path)"
 #     if ($rel_path | is-empty) {
 #         $path
@@ -131,11 +131,11 @@ def rustgenhash_installed_or_exit [] {
 def update_list_impl [id: string] {
     ask_for_all_update $id
 
-    let gdrive_dir = (get_gdrive_dir $id)
-    let list_file = $"($gdrive_dir)/list.txt"
+    let lf_dir = (get_large_file_dir $id)
+    let list_file = $"($lf_dir)/list.txt"
 
     let current_dir = (pwd)
-    cd $gdrive_dir
+    cd $lf_dir
     
     # Get all files recursively, filter ignored files, and sort
     let files = ls **/*
@@ -155,9 +155,9 @@ def update_list_impl [id: string] {
 def update_hash_impl [id: string] {
     ask_for_all_update $id
 
-    let gdrive_dir = (get_gdrive_dir $id)
-    let list_file = $"($gdrive_dir)/list.txt"
-    let hash_file = $"($gdrive_dir)/hash.txt"
+    let lf_dir = (get_large_file_dir $id)
+    let list_file = $"($lf_dir)/list.txt"
+    let hash_file = $"($lf_dir)/hash.txt"
     
     # First update the list
     update_list_impl $id
@@ -166,7 +166,7 @@ def update_hash_impl [id: string] {
     open $list_file
     | lines
     | each { |line|
-        let file = $"($gdrive_dir)/($line)"
+        let file = $"($lf_dir)/($line)"
         let hash = (get_hash $file)
         $"($line) --- ($hash)"
     }
@@ -176,8 +176,8 @@ def update_hash_impl [id: string] {
 }
 
 def check_list_impl [id: string] {
-    let gdrive_dir = (get_gdrive_dir $id)
-    let list_file = $"($gdrive_dir)/list.txt"
+    let lf_dir = (get_large_file_dir $id)
+    let list_file = $"($lf_dir)/list.txt"
     
     if not ($list_file | path exists) {
         error make {msg: $"check ($id) list: [Error] ($list_file) not found"}
@@ -187,7 +187,7 @@ def check_list_impl [id: string] {
     let missing = (open $list_file 
     | lines 
     | each { |line|
-        let file = $"($gdrive_dir)/($line)"
+        let file = $"($lf_dir)/($line)"
         if not ($file | path exists) {
             $line
         }
@@ -202,8 +202,8 @@ def check_list_impl [id: string] {
 }
 
 def check_hash_impl [id: string] {
-    let gdrive_dir = (get_gdrive_dir $id)
-    let hash_file = $"($gdrive_dir)/hash.txt"
+    let lf_dir = (get_large_file_dir $id)
+    let hash_file = $"($lf_dir)/hash.txt"
     
     if not ($hash_file | path exists) {
         error make {msg: $"check ($id) hash: [Error] ($hash_file) not found"}
@@ -216,7 +216,7 @@ def check_hash_impl [id: string] {
         let parts = ($line | split row " --- ")
         let file = $parts.0
         let expected_hash = $parts.1
-        let file_path = $"($gdrive_dir)/($file)"
+        let file_path = $"($lf_dir)/($file)"
         
         if not ($file_path | path exists) {
             print $"check ($id) hash: '($file)' not found"

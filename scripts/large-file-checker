@@ -21,10 +21,10 @@ treat_empty_as_all=$no
 do_ask_for_all_update=$yes
 
 # note: this is only for help message, not used in the script
-#       for script, please update get_gdrive_dir function
+#       for script, please update get_large_file_dir function
 dir_pattern_for_help="bin/data/**/from_gdrive" 
 
-function get_gdrive_dir {
+function get_large_file_dir {
     local id=$1
     # if id is all, show error and exit
     if [ "$id" == "all" ]; then
@@ -232,18 +232,18 @@ function update_list_impl {
     ask_for_all_update $id
 
     # update list.txt, recursively
-    local gdrive_dir=$(get_gdrive_dir $id)
+    local lf_dir=$(get_large_file_dir $id)
     local current_dir=$(pwd)
-    cd "$gdrive_dir"
+    cd "$lf_dir"
     local list_file="list.txt"
     rm -f "$list_file"
     touch "$list_file"
-    # find "$gdrive_dir" -type f -exec basename {} \; | grep -v -E "$(files_to_grep_pattern ${ignore_files[@]})" | sort > "$list_file"
+    # find "$lf_dir" -type f -exec basename {} \; | grep -v -E "$(files_to_grep_pattern ${ignore_files[@]})" | sort > "$list_file"
     find . -type f | grep -v -E "$(files_to_grep_pattern ${ignore_files[@]})" | sort > "$list_file"
     # modify list.txt content to remove first ./ if exists
     sed -i '' -e 's/^\.\///' "$list_file"
     cd "$current_dir"
-    local list_file_path="$gdrive_dir/$list_file"
+    local list_file_path="$lf_dir/$list_file"
     echo "update $id list: Updated $list_file_path"
 }
 
@@ -256,13 +256,13 @@ function update_hash_impl {
 
     # using list.txt, update hash.txt
     # hash file line format: "filename --- hash"
-    local gdrive_dir=$(get_gdrive_dir $id)
-    local list_file="$gdrive_dir/list.txt"
-    local hash_file="$gdrive_dir/hash.txt"
+    local lf_dir=$(get_large_file_dir $id)
+    local list_file="$lf_dir/list.txt"
+    local hash_file="$lf_dir/hash.txt"
     rm -f "$hash_file"
     touch "$hash_file"
     while IFS= read -r line; do
-        local file="$gdrive_dir/$line"
+        local file="$lf_dir/$line"
         # note that file name may contain spaces
         local hash=$(get_hash "$file")
         echo "$line --- $hash" >> "$hash_file"
@@ -272,15 +272,15 @@ function update_hash_impl {
 
 function check_list_impl {
     local id=$1
-    local gdrive_dir=$(get_gdrive_dir $id)
-    local list_file="$gdrive_dir/list.txt"
+    local lf_dir=$(get_large_file_dir $id)
+    local list_file="$lf_dir/list.txt"
     if [ ! -f "$list_file" ]; then
         echo "check $id list: [Error] $list_file not found"
         return
     fi
     local flag=0
     while IFS= read -r line; do
-        local file="$gdrive_dir/$line"
+        local file="$lf_dir/$line"
         if [ ! -f "$file" ]; then
             echo "check $id list: $file not found"
             flag=1
@@ -293,8 +293,8 @@ function check_list_impl {
 
 function check_hash_impl {
     local id=$1
-    local gdrive_dir=$(get_gdrive_dir $id)
-    local hash_file="$gdrive_dir/hash.txt"
+    local lf_dir=$(get_large_file_dir $id)
+    local hash_file="$lf_dir/hash.txt"
     if [ ! -f "$hash_file" ]; then
         echo "check $id hash: [Error] $hash_file not found"
         return
@@ -304,7 +304,7 @@ function check_hash_impl {
         # warn: file name may contain spaces, so cut may not work as expected. use ' --- ' as delimiter
         local file=$(echo "$line" | awk -F ' --- ' '{print $1}')
         local hash=$(echo "$line" | awk -F ' --- ' '{print $2}')
-        local file_path="$gdrive_dir/$file"
+        local file_path="$lf_dir/$file"
         if [ ! -f "$file_path" ]; then
             echo "check $id hash: '$file' not found"
             flag=1

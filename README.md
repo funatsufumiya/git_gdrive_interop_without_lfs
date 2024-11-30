@@ -33,7 +33,7 @@ In current adjusted version:
 
 This script is created to be able to use from several people in the same project and repository, so `ids` parameter on `large-file-checker` can be used to distinguish the folders in Google Drive and local. (each folder can contain also folders in it.)
 
-So you should modify `ids`, `dir_pattern_for_help` parameter and `get_gdrive_dir` function in the script for your own case.
+So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file_dir` function in the script for your own case.
 
 ## Notes
 
