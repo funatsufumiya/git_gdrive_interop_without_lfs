@@ -4,7 +4,7 @@ use std log
 
 # Configuration
 let version = "0.0.1"
-let command_name = "gdrive-checker"
+let command_name = "large-file-checker"
 let hash_algorithm = "blake3"
 let ids = ["assets" "common"]
 let ignore_files = ["list.txt" "hash.txt" ".gitignore" ".gitkeep" ".DS_Store"]
@@ -51,7 +51,7 @@ def is_id_all [id: string] {
     }
 }
 
-let all_update_confirmed_tmp_file = mktemp -t "gdrive-checker-all-update-confirmed.XXXXXXX"
+let all_update_confirmed_tmp_file = mktemp -t "large-file-checker-all-update-confirmed.XXXXXXX"
 
 def is_all_update_confirmed [] {
     if not ($all_update_confirmed_tmp_file | path exists) {
@@ -315,17 +315,17 @@ def print_version [] {
 }
 
 # # Main command handler
-# export def gdrive-checker [
+# export def large-file-checker [
 #     --version (-v) # Print version
 # ] {
 #     if $version {
 #         print_version
 #     } else {
-#         help gdrive-checker
+#         help large-file-checker
 #     }
 # }
 
-export def --wrapped gdrive-checker [...args] {
+export def --wrapped large-file-checker [...args] {
     # if any args have -h or --help, print help
     if ($args | any { |arg| $arg == "-h" or $arg == "--help" }) {
         print_help
@@ -353,7 +353,7 @@ export def --wrapped gdrive-checker [...args] {
 # # below functions are only exist for showing help message in the nu shell
 
 # # check
-# export def 'gdrive-checker check' [
+# export def 'large-file-checker check' [
 #     id: string
 # ] {
 #     # help check
@@ -361,41 +361,41 @@ export def --wrapped gdrive-checker [...args] {
 # }
 
 # # update
-# export def 'gdrive-checker update' [
+# export def 'large-file-checker update' [
 #     id: string
 # ] {
-#     help 'gdrive-checker update'
+#     help 'large-file-checker update'
 # }
 
 # # check list
-# export def 'gdrive-checker check list' [
+# export def 'large-file-checker check list' [
 #     id: string
 # ] {
-#     help 'gdrive-checker check list'
+#     help 'large-file-checker check list'
 # }
 
 # # check hash
-# export def 'gdrive-checker check hash' [
+# export def 'large-file-checker check hash' [
 #     id: string
 # ] {
-#     help 'gdrive-checker check hash'
+#     help 'large-file-checker check hash'
 # }
 
 # # update list
-# export def 'gdrive-checker update list' [
+# export def 'large-file-checker update list' [
 #     id: string
 # ] {
-#     help 'gdrive-checker update list'
+#     help 'large-file-checker update list'
 # }
 
 # # update hash
-# export def 'gdrive-checker update hash' [
+# export def 'large-file-checker update hash' [
 #     id: string
 # ] {
-#     help 'gdrive-checker update hash'
+#     help 'large-file-checker update hash'
 # }
 
-# alias main = gdrive-checker
+# alias main = large-file-checker
 # alias 'main check' = check
 # alias 'main update' = update_
 # alias 'main check list' = check_list
@@ -403,4 +403,4 @@ export def --wrapped gdrive-checker [...args] {
 # alias 'main update list' = update_list
 # alias 'main update hash' = update_hash
 
-alias main = gdrive-checker
+alias main = large-file-checker
