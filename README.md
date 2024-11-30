@@ -9,7 +9,7 @@ NOTE: This method is not dependent on Google Drive. You can use any other (cloud
 ## Limitations
 
 - In this method, copying and transferring files is using other methods. So you can detect the modification of the files, but which file should be copied or transferred is not automatically done.
-  - So this method is not suitable for the case that you want to frequently back to the previous version of the large file.
+  - So this method **is not suitable for the case** that you want to frequently back to the previous version of the large file.
 
 ## Script(s)
 
