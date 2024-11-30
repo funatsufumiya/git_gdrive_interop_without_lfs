@@ -1,0 +1,379 @@
+#!/bin/bash
+
+version="0.0.1"
+command_name="gdrive-checker"
+hash_algorithm="blake3"
+ids=(
+    "assets"
+    "common"
+)
+ignore_files=(
+    "list.txt"
+    "hash.txt"
+    ".gitignore"
+    ".gitkeep"
+    ".DS_Store"
+)
+ids_with_all=("${ids[@]}" "all")
+yes="yes"
+no="no"
+treat_empty_as_all=$no
+do_ask_for_all_update=$yes
+
+# note: this is only for help message, not used in the script
+#       for script, please update get_gdrive_dir function
+dir_pattern_for_help="bin/data/**/from_gdrive" 
+
+function get_gdrive_dir {
+    local id=$1
+    # if id is all, show error and exit
+    if [ "$id" == "all" ]; then
+        echo "[Error] id 'all' should not be used here"
+        exit 1
+    fi
+    echo "bin/data/$id/from_gdrive"
+}
+
+# note: `rgh file $file --algorithm $hash_algorithm` can be used to generate hash
+function get_hash {
+    # note file name may contain spaces
+    local file=$@
+    rgh file "$file" --algorithm $hash_algorithm | awk '{print $1}'
+}
+
+function print_array {
+    local array=("$@")
+    for i in "${array[@]}"; do
+        echo "$i"
+    done
+}
+
+function array_to_string {
+    local array=("$@")
+    local IFS=","
+    echo "${array[*]}"
+}
+
+function files_to_grep_pattern {
+    local files=("$@")
+    local IFS="|"
+    echo "${files[*]}"
+}
+
+function is_ignored_file {
+    local file=$1
+    for i in "${ignore_files[@]}"; do
+        if [ "$file" == "$i" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function is_one_of_ids_or_all {
+    local id=$1
+    if [ treat_empty_as_all == $yes ] && [ -z "$id" ]; then
+        return 0
+    fi
+    for i in "${ids_with_all[@]}"; do
+        if [ "$id" == "$i" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function is_id_all {
+    local id=$1
+    if [ treat_empty_as_all == $yes ] && [ -z "$id" ]; then
+        return 0
+    fi
+    if [ "$id" == "all" ]; then
+        return 0
+    fi
+    return 1
+}
+
+function check_id_or_exit {
+    local id=$1
+    if ! is_one_of_ids_or_all $id; then
+        echo "[Error] Invalid id '$id'"
+        echo "    Valid ids: $(array_to_string ${ids_with_all[@]})"
+        if [ treat_empty_as_all == $yes ]; then
+            echo "       (If not specified, all ids will be checked/updated)"
+        fi
+        exit 1
+    fi
+}
+
+# check rustgenhash is installed
+function rustgenhash_installed_or_exit {
+    if ! command -v rgh &> /dev/null
+    then
+        echo "[Error] rgh (rustgenhash) command not be found"
+        echo "    Please install it by running 'cargo install rustgenhash'"
+        echo "    (or download prebuilt binary from"
+        echo "        https://github.com/vschwaberow/rustgenhash/releases )"
+        exit 1
+    fi
+}
+
+# cd to the root of the project (scriptdir/..)
+cd "$(dirname "$0")/.."
+
+# help function
+function help {
+    echo ""
+    echo "Description:"
+    echo "   $command_name: Check and update list and hash for files in $dir_pattern_for_help"
+    echo ""
+    echo "Usage:"
+    echo "   $command_name -h | --help"
+    echo "        Print this help message"
+    echo "   $command_name -v | --version"
+    echo "        Print version"
+    echo ""
+    echo "   $command_name update [id]"
+    echo "        Update both list and hash, from existing files in $dir_pattern_for_help"
+    echo "   $command_name check [id]"
+    echo "        Check both list and hash, using list.txt and hash.txt"
+    echo ""
+    echo "   $command_name update list [id]"
+    echo "        Update $dir_pattern_for_help/list.txt"
+    echo "   $command_name update hash [id]"
+    echo "        Update $dir_pattern_for_help/hash.txt"
+    echo "   $command_name check list [id]"
+    echo "        Check if all files in list.txt exist in $dir_pattern_for_help"
+    echo "   $command_name check hash [id]"
+    echo "        Check if all files in hash.txt exist in $dir_pattern_for_help and have correct hash"
+    echo ""
+    echo "   [id]: $(array_to_string ${ids_with_all[@]})"
+    echo ""
+    if [ treat_empty_as_all == $yes ]; then
+        echo "        (If not specified, all ids will be checked/updated)"
+    fi
+    exit
+}
+
+# version function
+function version {
+    echo "$command_name $version"
+    exit
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    help
+elif [ "$#" -eq 0 ]; then
+    help
+fi
+
+# also check if last argument is -h or --help
+if [ "$#" -ge 2 ] && ([ "${@: -1}" == "-h" ] || [ "${@: -1}" == "--help" ]); then
+    help
+fi
+
+if [ "$1" == "-v" ] || [ "$1" == "--version" ]; then
+    version
+fi
+
+# check if rgh is installed
+rustgenhash_installed_or_exit
+
+# show not implemented message
+function not_implemented {
+    if [ -z "$1" ]; then
+        echo "[Error] Not implemented yet"
+        exit 1
+    fi
+    if [ -z "$2" ]; then
+        echo "[Error] '$1' is not implemented yet"
+        exit 1
+    fi
+    echo "[Error] '$1 $2' is not implemented yet"
+    exit 1
+}
+
+function iterate_all_or_once {
+    local func=$1
+    local id=$2
+    if is_id_all $id; then
+        for i in "${ids[@]}"; do
+            $func $i
+        done
+    else
+        $func $id
+    fi
+}
+
+is_all_update_confirmed=$no
+
+function ask_for_all_update {
+    local id=$1
+    if is_id_all $id; then
+        if [ "$do_ask_for_all_update" == "$yes" ] && [ "$is_all_update_confirmed" == "$no" ]; then
+            echo "Do you want to update all ids (folders)?"
+            echo "This may break the current list and hash files."
+            echo "(Yes/no)"
+            read answer
+            if [ "$answer" == "Yes" ]; then
+                is_all_update_confirmed=$yes
+            else
+                echo "Update cancelled"
+                exit 1
+            fi
+        fi
+    fi
+}
+
+# function
+
+function update_list_impl {
+    local id=$1
+    ask_for_all_update $id
+
+    # update list.txt, recursively
+    local gdrive_dir=$(get_gdrive_dir $id)
+    local current_dir=$(pwd)
+    cd "$gdrive_dir"
+    local list_file="list.txt"
+    rm -f "$list_file"
+    touch "$list_file"
+    # find "$gdrive_dir" -type f -exec basename {} \; | grep -v -E "$(files_to_grep_pattern ${ignore_files[@]})" | sort > "$list_file"
+    find . -type f | grep -v -E "$(files_to_grep_pattern ${ignore_files[@]})" | sort > "$list_file"
+    # modify list.txt content to remove first ./ if exists
+    sed -i '' -e 's/^\.\///' "$list_file"
+    cd "$current_dir"
+    local list_file_path="$gdrive_dir/$list_file"
+    echo "update $id list: Updated $list_file_path"
+}
+
+function update_hash_impl {
+    local id=$1
+    ask_for_all_update $id
+
+    # first, update list
+    update_list_impl $id
+
+    # using list.txt, update hash.txt
+    # hash file line format: "filename --- hash"
+    local gdrive_dir=$(get_gdrive_dir $id)
+    local list_file="$gdrive_dir/list.txt"
+    local hash_file="$gdrive_dir/hash.txt"
+    rm -f "$hash_file"
+    touch "$hash_file"
+    while IFS= read -r line; do
+        local file="$gdrive_dir/$line"
+        # note that file name may contain spaces
+        local hash=$(get_hash "$file")
+        echo "$line --- $hash" >> "$hash_file"
+    done < "$list_file"
+    echo "update $id hash: Updated $hash_file"
+}
+
+function check_list_impl {
+    local id=$1
+    local gdrive_dir=$(get_gdrive_dir $id)
+    local list_file="$gdrive_dir/list.txt"
+    if [ ! -f "$list_file" ]; then
+        echo "check $id list: [Error] $list_file not found"
+        return
+    fi
+    local flag=0
+    while IFS= read -r line; do
+        local file="$gdrive_dir/$line"
+        if [ ! -f "$file" ]; then
+            echo "check $id list: $file not found"
+            flag=1
+        fi
+    done < "$list_file"
+    if [ $flag -eq 0 ]; then
+        echo "check $id list: ALL OK"
+    fi
+}
+
+function check_hash_impl {
+    local id=$1
+    local gdrive_dir=$(get_gdrive_dir $id)
+    local hash_file="$gdrive_dir/hash.txt"
+    if [ ! -f "$hash_file" ]; then
+        echo "check $id hash: [Error] $hash_file not found"
+        return
+    fi
+    local flag=0
+    while IFS= read -r line; do
+        # warn: file name may contain spaces, so cut may not work as expected. use ' --- ' as delimiter
+        local file=$(echo "$line" | awk -F ' --- ' '{print $1}')
+        local hash=$(echo "$line" | awk -F ' --- ' '{print $2}')
+        local file_path="$gdrive_dir/$file"
+        if [ ! -f "$file_path" ]; then
+            echo "check $id hash: '$file' not found"
+            flag=1
+        else
+            local current_hash=$(get_hash $file_path)
+            if [ "$current_hash" != "$hash" ]; then
+                echo "check $id hash: '$file' hash mismatch"
+                flag=1
+            fi
+        fi
+    done < "$hash_file"
+    if [ $flag -eq 0 ]; then
+        echo "check $id hash: ALL OK"
+    fi
+}
+
+function update_list {
+    check_id_or_exit $1
+    iterate_all_or_once update_list_impl $1
+}
+
+function update_hash {
+    check_id_or_exit $1
+    iterate_all_or_once update_hash_impl $1
+}
+
+function check_list {
+    check_id_or_exit $1
+    iterate_all_or_once check_list_impl $1
+}
+
+function check_hash {
+    check_id_or_exit $1
+    iterate_all_or_once check_hash_impl $1
+}
+
+function update {
+    check_id_or_exit $1
+    ask_for_all_update $1
+    iterate_all_or_once update_hash_impl $1
+}
+
+function check_impl {
+    local id=$1
+    check_list_impl $id
+    check_hash_impl $id
+}
+
+# check both list and hash
+function check {
+    check_id_or_exit $1
+    iterate_all_or_once check_impl $1
+}
+
+# main
+if [ "$1" == "update" ] && [ "$2" == "list" ]; then
+    update_list $3
+elif [ "$1" == "update" ] && [ "$2" == "hash" ]; then
+    update_hash $3
+elif [ "$1" == "update" ]; then
+    update $2
+elif [ "$1" == "check" ] && [ "$2" == "list" ]; then
+    check_list $3
+elif [ "$1" == "check" ] && [ "$2" == "hash" ]; then
+    check_hash $3
+elif [ "$1" == "check" ]; then
+    check $2
+else
+    echo "[Error] Invalid arguments"
+    help
+    exit 1
+fi
