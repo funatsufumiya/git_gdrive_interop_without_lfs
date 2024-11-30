@@ -45,7 +45,7 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file
 
 - You need `rgh` command to use the script. You can install it by `cargo install rustgenhash`.
 - `large-file-checker` just checks local files only. Not communicates with Google Drive. So you can use any method like FTP or Dropbox instead of Google Drive.
-- Why `list.txt` and `hash.txt` separated is, this method sometimes users (mostly I) would forget updating hash. In this case, you can also use `large-file-checker check list assets` to check only the list. So you can modify `list.txt` also by hands without hash checking.
+- Why `list.txt` and `hash.txt` separated is, this method sometimes users (mostly I) would forget updating hash. In this case, you can also use `large-file-checker check list assets` to check only the list. So you can modify `list.txt` also by hands without hash checking. (This is also a remnant of the coexistence of .import files and list.txt in the older Godot version script.)
 
 ## License
 
