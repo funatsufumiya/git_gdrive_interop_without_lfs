@@ -41,6 +41,11 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_gdrive_dir
 - `gdrive-checker` just checks local files only. Not communicates with Google Drive. So you can use any method like FTP or Dropbox instead of Google Drive.
 - Why `list.txt` and `hash.txt` separated is, this method sometimes users (mostly I) would forget updating hash. In this case, you can also use `gdrive-checker check list assets` to check only the list. So you can modify `list.txt` also by hands without hash checking.
 
+## Limitations
+
+- In this method, copying and transferring files is using other methods. So you can detect the modification of the files, but which file should be copied or transferred is not automatically done.
+  - So this method is not suitable for the case that you want to frequently back to the previous version of the large file.
+
 ## License
 
 WTFPL
