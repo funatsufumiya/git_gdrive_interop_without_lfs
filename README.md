@@ -42,3 +42,5 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_gdrive_dir
 ## License
 
 WTFPL
+
+(Please create your original version, without notifying me. Feel free to modify and copy this document and scripts.)
