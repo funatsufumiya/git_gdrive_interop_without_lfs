@@ -6,6 +6,11 @@ This is useful when you have a large file that you want to version control with 
 
 NOTE: This method is not dependent on Google Drive. You can use any other (cloud/server/local) storage instead of Google Drive. And also you can use this method "with" Git LFS. (ex: when you want to use Git LFS for most files, but some quite large files are not suitable for Git LFS.)
 
+## Limitations
+
+- In this method, copying and transferring files is using other methods. So you can detect the modification of the files, but which file should be copied or transferred is not automatically done.
+  - So this method is not suitable for the case that you want to frequently back to the previous version of the large file.
+
 ## Script(s)
 
 - [scripts/large-file-checker](scripts/large-file-checker)
@@ -40,11 +45,6 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file
 - You need `rgh` command to use the script. You can install it by `cargo install rustgenhash`.
 - `large-file-checker` just checks local files only. Not communicates with Google Drive. So you can use any method like FTP or Dropbox instead of Google Drive.
 - Why `list.txt` and `hash.txt` separated is, this method sometimes users (mostly I) would forget updating hash. In this case, you can also use `large-file-checker check list assets` to check only the list. So you can modify `list.txt` also by hands without hash checking.
-
-## Limitations
-
-- In this method, copying and transferring files is using other methods. So you can detect the modification of the files, but which file should be copied or transferred is not automatically done.
-  - So this method is not suitable for the case that you want to frequently back to the previous version of the large file.
 
 ## License
 
