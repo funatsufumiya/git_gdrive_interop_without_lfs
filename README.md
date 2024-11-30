@@ -53,4 +53,4 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file
 
 WTFPL
 
-(Please create your original version, without notifying me. Feel free to modify and copy this document and scripts.)
+(Please create your original version, without notifying me. Feel free to modify and copy this document and scripts. And if you need a regular license, such as the Apache license, you can fork it and do so.)
