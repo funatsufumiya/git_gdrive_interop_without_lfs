@@ -30,7 +30,7 @@ This process solves the most common problem of using Git and Google Drive togeth
 
 ## Script detail
 
-The default `large-file-checker` script is adjusted for [openFrameworks](https://openframeworks.cc/) case (ex: `bin/data/**/from_gdrive` is considered as a large file directory), but you can easily modify it for your own case, not only for openFrameworks. (I'm also using [old version of this script](appendix/godot_scripts) for my [Godot Engine](https://godotengine.org/) game project.)
+The default `large-file-checker` script is adjusted for [openFrameworks](https://openframeworks.cc/) case (ex: `bin/data/**/from_gdrive` is considered as a large file directory), but you can easily modify it for your own case, not only for openFrameworks. (I'm also using [old version of this script](appendix/godot_scripts) for my [Godot Engine](https://godotengine.org/) game project. This was start point of this script.)
 
 In current adjusted version:
 
