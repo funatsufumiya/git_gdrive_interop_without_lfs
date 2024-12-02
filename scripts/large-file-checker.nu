@@ -28,7 +28,8 @@ def get_hash [file: path] {
 }
 
 def is_ignored_file [file: string] {
-    $ignore_files | any { |f| $f == $file }
+    # $ignore_files | any { |f| $f == $file }
+    $ignore_files | any { |f| ($file | str contains $f) }
 }
 
 def id_with_all_str [] {
