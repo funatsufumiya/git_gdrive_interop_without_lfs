@@ -51,7 +51,7 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file
 
 ## TODOs
 
-- Currently wildcard (*) is not supported in `ignore_files` pattern (see [#1](https://github.com/funatsufumiya/git_gdrive_interop_without_lfs/issues/1)). But it is no partial match, so just remove `*` from the pattern now. (ex: `*.import` -> `.import`)
+- Currently wildcard (*) is not supported in `ignore_files` pattern (see [#1](https://github.com/funatsufumiya/git_gdrive_interop_without_lfs/issues/1)). But it is now partial match, so just remove `*` from the pattern now. (ex: `*.import` -> `.import`)
 
 ## License
 
