@@ -49,7 +49,7 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file
 - `large-file-checker` just checks local files only. Not communicates with Google Drive. So you can use any method like FTP or Dropbox instead of Google Drive.
 - Why `list.txt` and `hash.txt` separated is, this method sometimes users (mostly I) would forget updating hash. In this case, you can also use `large-file-checker check list assets` to check only the list. So you can modify `list.txt` also by hands without hash checking. (This is also a remnant of the coexistence of .import files and list.txt in [the older Godot version script](appendix/godot_scripts).)
 
-## TODOs
+## Known issues
 
 - Currently wildcard (*) is not supported in `ignore_files` pattern (see [#1](https://github.com/funatsufumiya/git_gdrive_interop_without_lfs/issues/1)). But it is now partial match, so just remove `*` from the pattern now. (ex: `*.import` -> `.import`)
 
