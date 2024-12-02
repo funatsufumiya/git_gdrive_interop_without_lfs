@@ -13,6 +13,7 @@ This is a similar concept to [large-file-checker](../../scripts/large-file-check
 
 ### Folder structure
 
+```
 - (project_root)
     - scripts
         - *.nu
@@ -26,5 +27,6 @@ This is a similar concept to [large-file-checker](../../scripts/large-file-check
           - list.txt
           - *.mp4
         - (etc...)
+```
 
 NOTE: `some_folder` is just example, which has no `.import` files (especially controlled from addons. This is special case, not normal folder.)
