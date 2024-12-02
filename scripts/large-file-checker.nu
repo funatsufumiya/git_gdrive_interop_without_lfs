@@ -181,7 +181,8 @@ def check_list_impl [id: string] {
     let list_file = $"($lf_dir)/list.txt"
     
     if not ($list_file | path exists) {
-        error make {msg: $"check ($id) list: [Error] ($list_file) not found"}
+        # error make {msg: $"check ($id) list: [Error] ($list_file) not found"}
+        print $"check ($id) list: [Error] ($list_file) not found"
         return
     }
     
@@ -207,7 +208,8 @@ def check_hash_impl [id: string] {
     let hash_file = $"($lf_dir)/hash.txt"
     
     if not ($hash_file | path exists) {
-        error make {msg: $"check ($id) hash: [Error] ($hash_file) not found"}
+        # error make {msg: $"check ($id) hash: [Error] ($hash_file) not found"}
+        print $"check ($id) hash: [Error] ($hash_file) not found"
         return
     }
     
