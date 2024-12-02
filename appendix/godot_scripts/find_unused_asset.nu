@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 # Find unused assets in the project
 def main [] {
     use std log

@@ -1,3 +1,7 @@
+#!/usr/bin/env nu
+
+# Check for missing assets in the project
+
 def check_file [
     file: string
 ] {

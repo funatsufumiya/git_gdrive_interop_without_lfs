@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 # diff a list of asset files and their hashes
 def main [
     csv = "assets/asset_hashes.csv" # csv file with the asset hashes

@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 # Generate a list of asset files and their hashes
 def main [] {
     if ( which rgh | is-empty ) {
