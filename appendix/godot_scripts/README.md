@@ -20,6 +20,8 @@ This is a similar concept to [large-file-checker](../../scripts/large-file-check
         - .gdignore
     - src
         - *.gd
+    - scenes
+        - *.tscn
     - assets
         - *.png
         - *.png.import
