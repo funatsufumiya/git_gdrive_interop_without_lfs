@@ -293,6 +293,11 @@ def update_ [id: string] {
     exit 0
 }
 
+def get_hash_of_file [file: string] {
+    rustgenhash_installed_or_exit
+    print (get_hash $file)
+}
+
 # Help and version commands
 def print_help [] {
     print $"\nDescription:\n   ($command_name): Check and update list and hash for files in ($dir_pattern_for_help)\n"
@@ -304,6 +309,7 @@ def print_help [] {
     print $"   ($command_name) update hash [id]\n        Update hash.txt"
     print $"   ($command_name) check list [id]\n        Check list.txt"
     print $"   ($command_name) check hash [id]\n        Check hash.txt\n"
+    print $"   ($command_name) get_hash [file]\n        Print hash of a file\n"
     print $"   [id]: ($ids_with_all | str join ',')\n"
     if $treat_empty_as_all == true {
         print "        (If not specified, all ids will be checked/updated)"
@@ -342,6 +348,7 @@ export def --wrapped large-file-checker [...args] {
         ['check' 'list' $id] => { check_list $id }
         ['check' 'hash' $id] => { check_hash $id }
         ['check' $id] => { check $id }
+        ['get_hash' $file] => { get_hash_of_file $file }
         _ => {
             print "[Error] Invalid arguments"
             print_help

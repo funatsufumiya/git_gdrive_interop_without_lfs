@@ -146,6 +146,8 @@ function help {
     echo "        Check if all files in list.txt exist in $dir_pattern_for_help"
     echo "   $command_name check hash [id]"
     echo "        Check if all files in hash.txt exist in $dir_pattern_for_help and have correct hash"
+    echo "   $command_name get_hash [file]"
+    echo "        Print hash of a file"
     echo ""
     echo "   [id]: $(array_to_string ${ids_with_all[@]})"
     echo ""
@@ -359,6 +361,12 @@ function check {
     iterate_all_or_once check_impl $1
 }
 
+# hash a file
+function hash_file {
+    local file=$1
+    get_hash $file
+}
+
 # main
 if [ "$1" == "update" ] && [ "$2" == "list" ]; then
     update_list $3
@@ -372,6 +380,8 @@ elif [ "$1" == "check" ] && [ "$2" == "hash" ]; then
     check_hash $3
 elif [ "$1" == "check" ]; then
     check $2
+elif [ "$1" == "get_hash" ]; then
+    hash_file $2
 else
     echo "[Error] Invalid arguments"
     help
