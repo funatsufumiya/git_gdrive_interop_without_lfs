@@ -1,5 +1,7 @@
 # Git and Google Drive interop without LFS
 
+(japanese: [README_ja.md](./README_ja.md))
+
 This document introduces a way to use Git and Google Drive together without using Git LFS. 
 
 This is useful when you have a large file that you want to version control with Git, but you don't want to use Git LFS. (Especially having quite large files, such as game assets or movie files.)
@@ -57,5 +59,3 @@ So you should modify `ids`, `dir_pattern_for_help` parameter and `get_large_file
 ## License
 
 WTFPL or 0BSD
-
-(Please create your original version, without notifying me. Feel free to modify and copy this document and scripts. And if you need a regular license, such as the Apache license, you can fork it and do so.)
