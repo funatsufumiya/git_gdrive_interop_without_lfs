@@ -14,10 +14,12 @@ let do_ask_for_all_update = true
 # NOTE: only for help message. Please also change get_large_file_dir function
 let dir_pattern_for_help = "bin/data/**/from_gdrive"
 
+# modify this function to specify folder for id
 def get_large_file_dir [id: string] {
     if $id == "all" {
         error make {msg: "[Error] id 'all' should not be used here"}
     }
+
     $"bin/data/($id)/from_gdrive"
 }
 
@@ -140,8 +142,9 @@ def update_list_impl [id: string] {
     
     # Get all files recursively, filter ignored files, and sort
     let files = ls **/*
-    | where type == "file" 
-    | get name 
+    | where type == "file"
+    | get name
+    | each { |path| echo $path | str replace -a "\\" "/" }
     | where { |path| not (is_ignored_file ($path | path basename)) }
     | sort
 
@@ -167,9 +170,10 @@ def update_hash_impl [id: string] {
     open $list_file
     | lines
     | each { |line|
-        let file = $"($lf_dir)/($line)"
+        let norm_line = ($line | str replace -a "\\" "/")
+        let file = $"($lf_dir)/($norm_line)"
         let hash = (get_hash $file)
-        $"($line) --- ($hash)"
+        $"($norm_line) --- ($hash)"
     }
     | save -f $hash_file
     

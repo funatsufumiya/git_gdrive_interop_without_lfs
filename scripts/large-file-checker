@@ -24,6 +24,7 @@ do_ask_for_all_update=$yes
 #       for script, please update get_large_file_dir function
 dir_pattern_for_help="bin/data/**/from_gdrive" 
 
+# modify this function to specify folder for id
 function get_large_file_dir {
     local id=$1
     # if id is all, show error and exit
