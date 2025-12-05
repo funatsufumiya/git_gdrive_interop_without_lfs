@@ -1,5 +1,7 @@
 # Git and Google Drive interop without LFS
 
+![docs/header_image.png](docs/header_image.png)
+
 (japanese: [README_ja.md](./README_ja.md))
 
 This document introduces a way to use Git and Google Drive together without using Git LFS. 
