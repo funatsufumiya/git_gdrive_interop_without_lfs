@@ -2,6 +2,8 @@
 
 # GitとGoogle DriveのLFSなし連携
 
+![docs/header_image.png](docs/header_image.png)
+
 このドキュメントは、GitとGoogle DriveをGit LFSを使わずに連携させる方法を紹介します。
 
 これは、大きなファイルをGitでバージョン管理したいが、Git LFSを使いたくない場合に便利です。（特にゲームアセットや動画ファイルなど、非常に大きなファイルの場合）
