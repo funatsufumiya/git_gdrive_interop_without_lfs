@@ -48,7 +48,7 @@
 
 ## 注意事項
 
-- スクリプトを使うには`rgh`コマンドが必要です。`cargo install rustgenhash`でインストールできます。
+- スクリプトを使うには`rgh`コマンドが必要です。`cargo install rustgenhash` (エラーが出る場合は `cargo install rustgenhash --version 0.10.2` 等) でインストールできます。
 - `large-file-checker`はローカルファイルのみをチェックします。Google Driveとは通信しません。そのため、Google Driveの代わりにFTPやDropboxなど他の方法も使えます。
 - `list.txt`と`hash.txt`を分けている理由は、時々（主に私が）ハッシュの更新を忘れることがあるためです。この場合、`large-file-checker check list assets`でリストのみをチェックできます。手動で`list.txt`を修正することも可能です（[Godot用古いスクリプト](appendix/godot_scripts)で.importファイルとlist.txtが共存していた名残でもあります）。
 - Google Drive APIで直接チェックしない理由は、非常に大きなファイル（GB単位）がある場合、API制限にすぐ達してしまうためです。また、ローカルストレージやネットワーク速度の制約で一時的に小さいファイルに入れ替える必要がある場合もあります。現状の方法の方が実用的かつ柔軟だと考えています。
